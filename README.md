@@ -1,94 +1,223 @@
 # Security Copilot
 
-AI-powered browser security assistant — phishing detection, dark pattern analysis, and real-time trust scoring.
+AI-powered browser security assistant for phishing detection, scam analysis, dark pattern detection, and real-time website trust scoring.
 
-## Stack
+Security Copilot combines a FastAPI backend, Chrome extension, AI-assisted analysis pipeline, and real-time risk scoring engine to help users identify suspicious websites before interacting with them.
+
+---
+
+# Features
+
+## Implemented
+- JWT authentication system
+- User signup/login flow
+- Protected API routes
+- PostgreSQL persistence layer
+- Scan analysis endpoint
+- Trust scoring architecture
+- Dockerized backend infrastructure
+- Swagger/OpenAPI documentation
+- Async SQLAlchemy integration
+- Redis infrastructure setup
+
+## Planned
+- Chrome extension popup UI
+- Real-time browser scanning
+- AI-generated threat explanations
+- Dashboard analytics
+- Scan history timeline
+- Threat intelligence feeds
+- Redis caching + rate limiting
+- CI/CD pipeline
+
+---
+
+# Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Dashboard | Next.js 15, TypeScript, TailwindCSS, shadcn/ui, React Query |
-| Extension | Chrome MV3, TypeScript, React |
+| Dashboard | Next.js 15, TypeScript, TailwindCSS, shadcn/ui |
+| Extension | Chrome Manifest V3, TypeScript, React |
 | Backend | FastAPI, Python 3.12, Pydantic, async SQLAlchemy |
 | Database | PostgreSQL 16 |
 | Cache | Redis 7 |
 | AI | OpenAI GPT-4o-mini |
 | Infra | Docker, Docker Compose, GitHub Actions |
 
-## Project Structure
+---
 
+# Architecture
+
+```text
+Browser Extension
+        ↓
+Extract Page Metadata
+        ↓
+FastAPI Backend
+        ↓
+Threat Analysis Engine
+        ↓
+Trust Score Generation
+        ↓
+PostgreSQL Persistence
+        ↓
+Risk Result Returned
+        ↓
+Extension Popup Warning
 ```
+
+---
+
+# Project Structure
+
+```text
 security-copilot/
-├── apps/web/          # Next.js dashboard
-├── apps/extension/    # Chrome MV3 extension
-├── services/api/      # FastAPI backend
-├── packages/
-│   └── shared-types/  # TypeScript API contract (consumed by web + extension)
-├── infra/             # Dockerfiles, nginx
+├── apps/web/               # Next.js dashboard
+├── apps/extension/         # Chrome extension
+├── services/api/           # FastAPI backend
+├── packages/shared-types/  # Shared TypeScript contracts
+├── infra/                  # Docker + infrastructure configs
 └── docker-compose.yml
 ```
 
-## Quick Start
+---
 
-### Prerequisites
+# Quick Start
+
+## Prerequisites
+
 - Docker + Docker Compose
-- Node.js 22 + pnpm 9
-- Python 3.12
+- Node.js 22+
+- pnpm
+- Python 3.12+
 
-### 1. Environment setup
+---
+
+# Environment Setup
 
 ```bash
 cp services/api/.env.example services/api/.env
-# Fill in SECRET_KEY and OPENAI_API_KEY
 ```
 
-### 2. Start infrastructure
+Configure:
+
+```env
+SECRET_KEY=your_secret_key
+OPENAI_API_KEY=your_openai_key
+DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/seccopilot
+```
+
+---
+
+# Start Infrastructure
 
 ```bash
 docker compose up postgres redis -d
 ```
 
-### 3. Run database migrations
+---
+
+# Run Database Migrations
 
 ```bash
 cd services/api
-pip install uv
-uv pip install --system -e ".[dev]"
+
 alembic upgrade head
 ```
 
-### 4. Start services
+---
+
+# Start Backend
 
 ```bash
-# Terminal 1 — API
-docker compose up api
+uvicorn app.main:app --reload
+```
 
-# Terminal 2 — Dashboard
-pnpm install
+Swagger docs:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+# Development Workflow
+
+## Backend
+
+```bash
+cd services/api
+uvicorn app.main:app --reload
+```
+
+## Dashboard
+
+```bash
 pnpm dev:web
+```
 
-# Terminal 3 — Extension (then load dist/ as unpacked extension in Chrome)
+## Extension
+
+```bash
 pnpm dev:extension
 ```
 
-### Or: run everything via Docker Compose
+---
 
-```bash
-OPENAI_API_KEY=sk-... docker compose up
+# Current Backend Capabilities
+
+## Authentication
+- JWT access token generation
+- Secure bcrypt password hashing
+- Protected route authorization
+- User persistence
+
+## Scan Engine
+- URL submission endpoint
+- Risk scoring pipeline
+- Scan persistence
+- Structured scan response schema
+
+---
+
+# Example Scan Request
+
+```json
+{
+  "url": "https://free-iphone-giveaway.xyz",
+  "page_text": "WIN FREE IPHONE NOW LIMITED OFFER",
+  "page_title": "Free iPhone Giveaway",
+  "external_link_count": 15,
+  "form_count": 3
+}
 ```
 
-## Architecture
+---
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for full design decisions and communication flow.
+# Future Improvements
 
-## Development Phases
+- ML-based phishing classification
+- Browser-side lightweight scanning
+- Threat intelligence integration
+- Community-driven reputation scoring
+- Admin moderation dashboard
+- WebSocket live threat updates
+- Distributed scan workers
 
-- [x] Phase 1 — Folder structure, Docker, shared types
-- [ ] Phase 2 — Auth (JWT, bcrypt, user model)
-- [ ] Phase 3 — Analysis engine (heuristics)
-- [ ] Phase 4 — Trust scorer + scan persistence
-- [ ] Phase 5 — Extension content script + popup
-- [ ] Phase 6 — AI explainer (OpenAI)
-- [ ] Phase 7 — Dashboard auth + scan history
-- [ ] Phase 8 — Analytics charts
-- [ ] Phase 9 — Redis caching + rate limiting
-- [ ] Phase 10 — CI/CD + production hardening
+---
+
+# Why This Project?
+
+Modern phishing and scam websites increasingly use:
+- social engineering
+- deceptive UI patterns
+- fake urgency
+- cloned branding
+
+Security Copilot aims to provide real-time browser-native protection and explainable risk analysis for everyday users.
+
+---
+
+# License
+
+MIT
