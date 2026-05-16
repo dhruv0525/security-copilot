@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  api-lint-test:
+    name: API — lint & test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: seccopilot
+          POSTGRES_PASSWORD: seccopilot
+          POSTGRES_DB: seccopilot_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install uv
+        run: pip install uv
+      - name: Install dependencies
+        working-directory: services/api
+        run: uv pip install --system -e ".[dev]"
+      - name: Lint
+        working-directory: services/api
+        run: ruff check .
+      - name: Type check
+        working-directory: services/api
+        run: mypy app
+      - name: Test
+        working-directory: services/api
+        env:
+          DATABASE_URL: postgresql+asyncpg://seccopilot:seccopilot@localhost:5432/seccopilot_test
+          REDIS_URL: redis://localhost:6379/0
+          SECRET_KEY: ci-test-secret
+          OPENAI_API_KEY: sk-fake-for-tests
+        run: pytest --cov=app --cov-report=term-missing
+
+  web-type-check:
+    name: Web — type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @security-copilot/shared-types build
+      - run: pnpm --filter @security-copilot/web type-check

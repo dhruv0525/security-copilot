@@ -1,0 +1,46 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# env
+.env
+.env.local
+
+# mac
+.DS_Store
+
+# logs
+*.log
+
+# build
+dist/
+build/
+
+# vscode
+.vscode/
+
+# docker
+postgres_data/
+
+# alembic
+*.sqlite3
+
+# coverage
+.coverage
+htmlcov/
+
+# next
+.next/
+
+# uploads
+uploads/
+
+# temp
+tmp/
+temp/

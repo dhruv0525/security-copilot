@@ -1,0 +1,28 @@
+{
+  "name": "@security-copilot/extension",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "webpack --config webpack.config.ts --watch --mode development",
+    "build": "webpack --config webpack.config.ts --mode production",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@security-copilot/shared-types": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

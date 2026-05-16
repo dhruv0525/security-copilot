@@ -1,0 +1,17 @@
+{
+  "name": "security-copilot",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @security-copilot/web dev",
+    "dev:extension": "pnpm --filter @security-copilot/extension dev",
+    "build": "pnpm --filter '@security-copilot/*' build",
+    "type-check": "pnpm --filter '@security-copilot/*' type-check",
+    "lint": "pnpm --filter '@security-copilot/*' lint",
+    "clean": "pnpm --filter '@security-copilot/*' clean"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
