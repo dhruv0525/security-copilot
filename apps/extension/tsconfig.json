@@ -9,9 +9,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@security-copilot/shared-types": ["../../packages/shared-types/src"]
+      "@security-copilot/shared-types": ["../../packages/shared-types/src/index.ts"]
     }
   },
   "include": ["src"],

@@ -1,9 +1,11 @@
 import { MESSAGE_TYPES, POPUP_CACHE_TTL_MS, STORAGE_KEYS } from "../shared/constants";
 import type { ScanRequest, ScanResult } from "@security-copilot/shared-types";
 import { callScanApi } from "./api";
+import type { ApiScanResponse } from "./api";
 import { storage } from "../shared/storage";
 
 interface CacheEntry {
+
   result: ScanResult;
   cachedAt: number;
 }
@@ -28,7 +30,9 @@ async function handleMessage(message: { type: string; payload?: unknown }): Prom
     }
     case MESSAGE_TYPES.GET_CACHED_RESULT: {
       const { url } = message.payload as { url: string };
-      return getCached(url);
+      const cached = getCached(url);
+      if (cached) return { result: cached };
+      return { result: null };
     }
     case MESSAGE_TYPES.CLEAR_CACHE: {
       scanCache.clear();
@@ -39,24 +43,30 @@ async function handleMessage(message: { type: string; payload?: unknown }): Prom
   }
 }
 
-async function getScanResult(request: ScanRequest): Promise<ScanResult | null> {
+async function getScanResult(request: ScanRequest): Promise<ApiScanResponse> {
   const cacheKey = request.url;
   const cached = getCached(cacheKey);
-  if (cached) return cached;
+  if (cached) return { result: cached };
 
-  const token = await storage.get<string>(STORAGE_KEYS.authToken);
+  let token = await storage.get<string>(STORAGE_KEYS.authToken);
   if (!token) {
-    console.warn("[SecurityCopilot BG] No auth token, skipping scan");
-    return null;
+    // TEMPORARY MVP AUTH BYPASS
+    // TODO: restore secure extension JWT authentication flow
+    console.warn("[SecurityCopilot BG] No auth token found, using temporary MVP bypass dummy token");
+    token = "MVP_TEST_DUMMY_TOKEN"; 
   }
 
-  const result = await callScanApi(request, token);
-  if (result) {
-    scanCache.set(cacheKey, { result, cachedAt: Date.now() });
+  console.log(`[SecurityCopilot BG] Calling API for URL: ${request.url}`);
+  const response = await callScanApi(request, token);
+  if (response.result) {
+    console.log(`[SecurityCopilot BG] Scan successful for URL: ${request.url}`);
+    scanCache.set(cacheKey, { result: response.result, cachedAt: Date.now() });
     // Update extension badge
-    updateBadge(result);
+    updateBadge(response.result);
+  } else {
+    console.warn(`[SecurityCopilot BG] Scan failed for URL: ${request.url}`, response.error);
   }
-  return result;
+  return response;
 }
 
 function getCached(url: string): ScanResult | null {

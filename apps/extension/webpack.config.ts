@@ -1,6 +1,10 @@
 import path from "path";
+import { fileURLToPath } from "url";
 import CopyPlugin from "copy-webpack-plugin";
 import type { Configuration } from "webpack";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const config: Configuration = {
   entry: {
@@ -46,12 +50,10 @@ const config: Configuration = {
         { from: "manifest.json", to: "manifest.json" },
         { from: "src/popup/index.html", to: "popup/index.html" },
         { from: "src/options/index.html", to: "options/index.html" },
-        // Icons would go here once assets are added
       ],
     }),
   ],
 
-  // MV3 service workers must be a single file — no chunking
   optimization: {
     splitChunks: false,
   },

@@ -9,15 +9,44 @@ const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "SVG", "HEAD"]);
 const MAX_TEXT_LENGTH = 8_000;
 
 export function extractPageData(): PageData {
-  return {
-    text: extractVisibleText(),
-    title: document.title ?? "",
-    externalLinkCount: countExternalLinks(),
-    formCount: document.querySelectorAll("form").length,
-  };
+  let text = "";
+  let title = "";
+  let externalLinkCount = 0;
+  let formCount = 0;
+
+  try {
+    text = extractVisibleText();
+  } catch (e) {
+    console.warn("[SecurityCopilot Content] Failed to extract text:", e);
+  }
+
+  try {
+    title = document.title ?? "";
+  } catch (e) {
+    console.warn("[SecurityCopilot Content] Failed to extract title:", e);
+  }
+
+  try {
+    externalLinkCount = countExternalLinks();
+  } catch (e) {
+    console.warn("[SecurityCopilot Content] Failed to count links:", e);
+  }
+
+  try {
+    formCount = document.querySelectorAll("form").length;
+  } catch (e) {
+    console.warn("[SecurityCopilot Content] Failed to count forms:", e);
+  }
+
+  return { text, title, externalLinkCount, formCount };
 }
 
 function extractVisibleText(): string {
+  if (!document.body) {
+    console.warn("[SecurityCopilot Content] document.body is null");
+    return "";
+  }
+
   const walker = document.createTreeWalker(
     document.body,
     NodeFilter.SHOW_TEXT,

@@ -1,8 +1,4 @@
-export const API_BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://api.yourdomain.com"
-    : "http://localhost:8000";
-
+export const API_BASE_URL = "http://127.0.0.1:8000";
 export const API_V1 = `${API_BASE_URL}/api/v1`;
 
 /** Risk score thresholds matching backend RiskLevel enum */
@@ -28,4 +24,5 @@ export const MESSAGE_TYPES = {
   SCAN_RESULT: "SCAN_RESULT",
   GET_CACHED_RESULT: "GET_CACHED_RESULT",
   CLEAR_CACHE: "CLEAR_CACHE",
+  EXTRACT_PAGE_DATA: "EXTRACT_PAGE_DATA",
 } as const;

@@ -10,20 +10,20 @@ export function ActionButtons() {
   return (
     <div style={{ display: "flex", gap: "8px" }}>
       <button
-        onClick={openDashboard}
+        disabled
         style={{
           flex: 1,
           padding: "8px",
           borderRadius: "6px",
-          border: "none",
-          background: "#111827",
-          color: "#fff",
+          border: "1px solid #374151",
+          background: "#1f2937",
+          color: "#9ca3af",
           fontSize: "12px",
           fontWeight: 600,
-          cursor: "pointer",
+          cursor: "not-allowed",
         }}
       >
-        View in Dashboard →
+        Dashboard Coming Soon
       </button>
     </div>
   );
