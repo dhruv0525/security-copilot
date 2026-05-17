@@ -7,8 +7,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.models.user import User
 from app.services.auth.jwt import decode_access_token
+from app.services.cache.redis_client import get_redis, CacheService
 
 bearer_scheme = HTTPBearer()
+
+async def get_cache() -> CacheService:
+    redis_client = await get_redis()
+    return CacheService(redis_client)
 
 
 async def get_current_user(
@@ -41,3 +46,4 @@ async def get_current_user(
 # Type alias used in route handlers: `user: CurrentUser`
 CurrentUser = Annotated[User, Depends(get_current_user)]
 DBSession = Annotated[AsyncSession, Depends(get_db)]
+CacheDep = Annotated[CacheService, Depends(get_cache)]

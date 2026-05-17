@@ -15,15 +15,14 @@ export async function callScanApi(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(request),
     });
 
-    // TEMPORARY MVP AUTH BYPASS
-    // TODO: restore secure extension JWT authentication flow
-    // if (response.status === 401) {
-    //   return { error: "unauthenticated" };
-    // }
+    if (response.status === 401) {
+      return { error: "unauthenticated" };
+    }
 
     if (!response.ok) {
       console.error(`[SecurityCopilot BG] Scan API error: ${response.status}`);

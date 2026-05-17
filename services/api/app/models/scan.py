@@ -15,10 +15,10 @@ class ScanResult(Base, TimestampMixin):
         primary_key=True,
         default=uuid.uuid4,
     )
-    user_id: Mapped[uuid.UUID] = mapped_column(
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
+        nullable=True,  # TODO: restore nullable=False when auth is re-enabled
         index=True,
     )
     url: Mapped[str] = mapped_column(Text, nullable=False)

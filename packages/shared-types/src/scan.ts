@@ -27,6 +27,16 @@ export interface ScanResult {
   cached: boolean;
   /** Milliseconds the analysis took */
   analysis_duration_ms: number;
+  domain_info?: {
+    registrar?: string | null;
+    days_old?: number | null;
+    country?: string | null;
+  };
+  reputation?: {
+    source: string;
+    malicious: boolean;
+    categories?: string[];
+  };
 }
 
 export interface ScanListItem {

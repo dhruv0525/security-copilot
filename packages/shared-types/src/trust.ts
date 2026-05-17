@@ -22,6 +22,13 @@ export interface DetectedIssue {
   evidence?: string;
 }
 
+export interface ScoreSignal {
+  name: string;
+  weight: number;
+  severity: RiskLevel;
+  reason: string;
+}
+
 export interface TrustScore {
   /** 0–100. Higher = more trustworthy. */
   score: number;
@@ -32,10 +39,12 @@ export interface TrustScore {
   /** Human-readable AI-generated explanation */
   explanation: string;
   /** Sub-scores per analyzer, 0–100 each */
-  component_scores: {
+  component_scores?: {
     phishing: number;
     dark_patterns: number;
     url_reputation: number;
     keyword_risk: number;
   };
+  signals?: ScoreSignal[];
+  recommendation?: string;
 }

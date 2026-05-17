@@ -39,6 +39,9 @@ class Settings(BaseSettings):
         "http://localhost:3000",
     ]
 
+    # ── External APIs ────────────────────────────────
+    google_safe_browsing_api_key: str | None = None
+
     @property
     def is_production(self) -> bool:
         return self.environment == "production"
