@@ -2,28 +2,36 @@ import React from "react";
 
 const DASHBOARD_URL = "http://localhost:3000";
 
-export function ActionButtons() {
+interface ActionButtonsProps {
+  scanId: string;
+}
+
+export function ActionButtons({ scanId }: ActionButtonsProps) {
   const openDashboard = () => {
-    chrome.tabs.create({ url: `${DASHBOARD_URL}/scans` });
+    chrome.tabs.create({ url: `${DASHBOARD_URL}/scans/${scanId}` });
   };
 
   return (
-    <div style={{ display: "flex", gap: "8px" }}>
+    <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
       <button
-        disabled
+        onClick={openDashboard}
         style={{
           flex: 1,
           padding: "8px",
           borderRadius: "6px",
-          border: "1px solid #374151",
-          background: "#1f2937",
-          color: "#9ca3af",
+          border: "none",
+          background: "#2563eb",
+          color: "white",
           fontSize: "12px",
           fontWeight: 600,
-          cursor: "not-allowed",
+          cursor: "pointer",
+          textAlign: "center",
+          transition: "background 0.15s ease",
         }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#1d4ed8")}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
       >
-        Dashboard Coming Soon
+        View Full Dashboard Report
       </button>
     </div>
   );

@@ -98,6 +98,7 @@ class ScanListItem(BaseModel):
     score: float
     level: RiskLevel
     dominant_category: RiskCategory | None
+    confidence: str = "medium"
 
 
 class PaginatedScans(BaseModel):

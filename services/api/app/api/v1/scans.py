@@ -60,6 +60,23 @@ async def create_scan(
     duration_ms = int((time.time() - start_time) * 1000)
     domain = urlparse(str(body.url)).netloc or str(body.url)
 
+    payload = trust_score.model_dump(mode="json")
+    payload["domain_info"] = (
+        intelligence_result.domain_info.model_dump()
+        if intelligence_result.domain_info
+        else None
+    )
+    payload["reputation"] = (
+        intelligence_result.reputation.model_dump()
+        if intelligence_result.reputation
+        else None
+    )
+    payload["ssl_info"] = (
+        intelligence_result.ssl_info.model_dump()
+        if intelligence_result.ssl_info
+        else None
+    )
+
     repo = ScanRepository(db)
     new_scan = ScanResult(
         user_id=user.id,
@@ -68,7 +85,7 @@ async def create_scan(
         trust_score=trust_score.score,
         risk_level=trust_score.level,
         dominant_category=trust_score.dominant_category,
-        analysis_payload=trust_score.model_dump(mode="json"),
+        analysis_payload=payload,
         analysis_duration_ms=duration_ms,
         was_cached=False,
     )
@@ -126,6 +143,7 @@ async def list_scans(
                 "score": s.trust_score,
                 "level": s.risk_level,
                 "dominant_category": s.dominant_category,
+                "confidence": (s.analysis_payload or {}).get("confidence", "medium"),
             }
             for s in items
         ],
@@ -167,4 +185,7 @@ async def get_scan(
         trust_score=trust_score,
         cached=True,
         analysis_duration_ms=scan.analysis_duration_ms,
+        domain_info=payload.get("domain_info"),
+        reputation=payload.get("reputation"),
+        ssl_info=payload.get("ssl_info"),
     )

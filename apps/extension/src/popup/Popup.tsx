@@ -194,7 +194,7 @@ export function Popup() {
         <>
           <RiskSummary result={result} />
           <IssueList issues={result.trust_score.issues} />
-          <ActionButtons />
+          <ActionButtons scanId={result.id} />
         </>
       )}
     </div>
