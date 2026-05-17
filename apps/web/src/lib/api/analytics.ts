@@ -6,4 +6,8 @@ export const analyticsApi = {
     const { data } = await apiClient.get<AnalyticsSummary>("/analytics/summary");
     return data;
   },
+  getTrends: async (): Promise<any[]> => {
+    const { data } = await apiClient.get<any[]>("/analytics/trends");
+    return data;
+  },
 };

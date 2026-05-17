@@ -16,4 +16,9 @@ export const scansApi = {
     const { data } = await apiClient.get<ScanResult>(`/scans/${id}`);
     return data;
   },
+
+  create: async (payload: { url: string; page_text?: string; page_title?: string }): Promise<ScanResult> => {
+    const { data } = await apiClient.post<ScanResult>("/scans", payload);
+    return data;
+  },
 };

@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+
+const geistSans = Inter({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+});
+
+const geistMono = Roboto_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+});
 
 export const metadata: Metadata = {
   title: "Security Copilot",
@@ -11,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body className="bg-background text-foreground antialiased">
         <Providers>{children}</Providers>
       </body>
