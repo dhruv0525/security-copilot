@@ -99,12 +99,10 @@ export function Popup() {
                 return;
               }
 
-              // TEMPORARY MVP AUTH BYPASS
-              // TODO: restore secure extension JWT authentication flow
-              // if (apiResponse.error === "unauthenticated") {
-              //   setState("unauthenticated");
-              //   return;
-              // }
+              if (apiResponse.error === "unauthenticated") {
+                setState("unauthenticated");
+                return;
+              }
 
               if (apiResponse.error || !apiResponse.result) {
                 console.error("[SecurityCopilot Popup] Scan API error:", apiResponse.error);
@@ -163,9 +161,29 @@ export function Popup() {
       )}
 
       {state === "unauthenticated" && (
-        <p style={{ color: "#f97316" }}>
-          Sign in to the dashboard to enable real-time scanning.
-        </p>
+        <div style={{ textAlign: "center", padding: "16px 0" }}>
+          <p style={{ color: "#f97316", marginBottom: "12px", fontWeight: 600, fontSize: "14px" }}>
+            Authentication Required
+          </p>
+          <p style={{ color: "#6b7280", fontSize: "12px", lineHeight: "1.5", marginBottom: "16px" }}>
+            Please sign in to the dashboard or paste your API Access Token from the dashboard settings into the extension Settings page.
+          </p>
+          <button
+            onClick={() => chrome.runtime.openOptionsPage()}
+            style={{
+              padding: "10px 16px",
+              backgroundColor: "#111827",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: 600,
+              width: "100%",
+            }}
+          >
+            Open Settings
+          </button>
+        </div>
       )}
 
       {state === "error" && (

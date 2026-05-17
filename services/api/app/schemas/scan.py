@@ -85,6 +85,10 @@ class ScanResponse(BaseModel):
     # Reputation provider enrichment
     reputation: dict | None = None
 
+    # SSL/TLS certificate intelligence
+    ssl_info: dict | None = None
+
+
 
 class ScanListItem(BaseModel):
     id: str

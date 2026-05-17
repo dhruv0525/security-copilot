@@ -37,6 +37,12 @@ export interface ScanResult {
     malicious: boolean;
     categories?: string[];
   };
+  ssl_info?: {
+    issuer?: string | null;
+    validity_days?: number | null;
+    expired?: boolean;
+    self_signed?: boolean;
+  };
 }
 
 export interface ScanListItem {

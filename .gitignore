@@ -1,46 +1,95 @@
-# dependencies
+# =========================
+# Dependencies
+# =========================
 node_modules/
 .pnpm-store/
 
-# python
+# =========================
+# Python
+# =========================
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
 .venv/
 venv/
+env/
 
-# env
+.pytest_cache/
+.mypy_cache/
+
+# =========================
+# Environment Variables
+# =========================
 .env
-.env.local
+.env.*
+!.env.example
 
-# mac
+# =========================
+# macOS
+# =========================
 .DS_Store
 
-# logs
+# =========================
+# Logs
+# =========================
 *.log
 
-# build
+# =========================
+# Build Outputs
+# =========================
 dist/
 build/
 
-# vscode
+# =========================
+# Next.js
+# =========================
+.next/
+out/
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# VSCode / IDE
+# =========================
 .vscode/
+.idea/
 
-# docker
+# =========================
+# Docker / Local Infrastructure
+# =========================
 postgres_data/
+dump.rdb
 
-# alembic
+# =========================
+# Alembic / SQLite
+# =========================
 *.sqlite3
+*.db
 
-# coverage
+# =========================
+# Coverage
+# =========================
 .coverage
 htmlcov/
 
-# next
-.next/
-
-# uploads
+# =========================
+# Uploads / Temp
+# =========================
 uploads/
-
-# temp
 tmp/
 temp/
+
+# =========================
+# Chrome Extension
+# =========================
+*.crx
+
+# =========================
+# OS / Misc
+# =========================
+Thumbs.db

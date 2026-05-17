@@ -47,4 +47,6 @@ export interface TrustScore {
   };
   signals?: ScoreSignal[];
   recommendation?: string;
+  /** Confidence classification: "high" | "medium" | "low" */
+  confidence?: string;
 }
