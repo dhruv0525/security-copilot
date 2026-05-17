@@ -1,70 +1,121 @@
 # Security Copilot
 
-AI-powered browser security assistant for phishing detection, scam analysis, dark pattern detection, and real-time website trust scoring.
+Security Copilot is an adaptive browser-security intelligence platform built with a Chrome Extension + FastAPI backend architecture.
 
-Security Copilot combines a FastAPI backend, Chrome extension, AI-assisted analysis pipeline, and real-time risk scoring engine to help users identify suspicious websites before interacting with them.
+The system performs real-time phishing detection, URL reputation analysis, domain intelligence analysis, and explainable trust scoring to help users identify malicious or suspicious websites before interacting with them.
+
+Unlike traditional DOM-only browser scanners, Security Copilot uses a URL-first adaptive threat intelligence pipeline capable of functioning even on modern CSP-protected websites.
 
 ---
 
-# Features
+# Core Features
 
 ## Implemented
-- JWT authentication system
-- User signup/login flow
-- Protected API routes
-- PostgreSQL persistence layer
-- Scan analysis endpoint
-- Trust scoring architecture
-- Dockerized backend infrastructure
-- Swagger/OpenAPI documentation
-- Async SQLAlchemy integration
-- Redis infrastructure setup
 
-## Planned
-- Chrome extension popup UI
-- Real-time browser scanning
-- AI-generated threat explanations
-- Dashboard analytics
-- Scan history timeline
-- Threat intelligence feeds
-- Redis caching + rate limiting
-- CI/CD pipeline
+### Browser Security Intelligence
+
+* Real-time website threat analysis
+* Adaptive URL-first intelligence pipeline
+* Explainable trust scoring engine
+* Confidence-based risk classification
+* Suspicious URL heuristic analysis
+* Domain-age intelligence (WHOIS)
+* Google Safe Browsing integration
+* Reputation-provider orchestration system
+* Graceful degradation for protected websites
+
+### Backend Infrastructure
+
+* FastAPI async backend
+* JWT authentication system
+* Protected API routes
+* PostgreSQL persistence layer
+* Redis intelligence caching
+* Async SQLAlchemy integration
+* Dockerized infrastructure
+* Swagger/OpenAPI documentation
+
+### Chrome Extension
+
+* Chrome Manifest V3 architecture
+* Popup-based website scanning
+* Background service worker
+* Content script integration
+* Browser-to-backend scan orchestration
+* Real-time trust score rendering
+
+---
+
+# Live Threat Intelligence Pipeline
+
+```text
+Chrome Extension
+        ↓
+Extract URL + Optional DOM Metadata
+        ↓
+FastAPI Backend
+        ↓
+Adaptive Intelligence Engine
+        ├── URL Heuristics
+        ├── Google Safe Browsing
+        ├── WHOIS / Domain Intelligence
+        ├── Reputation Analysis
+        └── DOM Enrichment (Optional)
+        ↓
+Explainable ScoreSignal Engine
+        ↓
+Trust Score + Risk Classification
+        ↓
+Structured Security Response
+        ↓
+Extension Popup Warning UI
+```
+
+---
+
+# Detection Capabilities
+
+* Phishing detection
+* Malicious URL reputation checks
+* Suspicious domain analysis
+* Young-domain detection
+* Credential harvesting indicators
+* URL anomaly heuristics
+* Social engineering threat detection
+* Risk confidence scoring
+
+---
+
+# Example Detection Output
+
+```json
+{
+  "level": "critical",
+  "confidence": "high",
+  "signals": [
+    {
+      "name": "google_flagged_phishing",
+      "severity": "critical",
+      "reason": "Google Safe Browsing flagged this URL for phishing activity"
+    }
+  ],
+  "recommendation": "Avoid entering credentials or sensitive information."
+}
+```
 
 ---
 
 # Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Dashboard | Next.js 15, TypeScript, TailwindCSS, shadcn/ui |
-| Extension | Chrome Manifest V3, TypeScript, React |
-| Backend | FastAPI, Python 3.12, Pydantic, async SQLAlchemy |
-| Database | PostgreSQL 16 |
-| Cache | Redis 7 |
-| AI | OpenAI GPT-4o-mini |
-| Infra | Docker, Docker Compose, GitHub Actions |
-
----
-
-# Architecture
-
-```text
-Browser Extension
-        ↓
-Extract Page Metadata
-        ↓
-FastAPI Backend
-        ↓
-Threat Analysis Engine
-        ↓
-Trust Score Generation
-        ↓
-PostgreSQL Persistence
-        ↓
-Risk Result Returned
-        ↓
-Extension Popup Warning
-```
+| Layer               | Technology                                       |
+| ------------------- | ------------------------------------------------ |
+| Dashboard           | Next.js 15, TypeScript, TailwindCSS, shadcn/ui   |
+| Extension           | Chrome Manifest V3, React, TypeScript            |
+| Backend             | FastAPI, Python 3.12, Pydantic, async SQLAlchemy |
+| Database            | PostgreSQL 16                                    |
+| Cache               | Redis 7                                          |
+| Threat Intelligence | Google Safe Browsing API                         |
+| Infra               | Docker, Docker Compose, GitHub Actions           |
 
 ---
 
@@ -82,14 +133,32 @@ security-copilot/
 
 ---
 
+# Architecture Design
+
+Security Copilot evolved from a DOM-first browser scanner into an adaptive intelligence platform.
+
+Current architecture principles:
+
+* URL-first analysis
+* Modular provider orchestration
+* Explainable threat scoring
+* Async intelligence providers
+* Graceful degradation
+* Real-time browser integration
+* Scalable provider abstraction system
+
+This allows the platform to continue functioning even on heavily protected modern websites where DOM extraction is limited.
+
+---
+
 # Quick Start
 
 ## Prerequisites
 
-- Docker + Docker Compose
-- Node.js 22+
-- pnpm
-- Python 3.12+
+* Docker + Docker Compose
+* Node.js 22+
+* pnpm
+* Python 3.12+
 
 ---
 
@@ -103,8 +172,8 @@ Configure:
 
 ```env
 SECRET_KEY=your_secret_key
-OPENAI_API_KEY=your_openai_key
 DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/seccopilot
+GOOGLE_SAFE_BROWSING_API_KEY=your_gsb_api_key
 ```
 
 ---
@@ -141,42 +210,19 @@ http://localhost:8000/docs
 
 ---
 
-# Development Workflow
-
-## Backend
+# Run Chrome Extension
 
 ```bash
-cd services/api
-uvicorn app.main:app --reload
+pnpm build
 ```
 
-## Dashboard
+Then:
 
-```bash
-pnpm dev:web
-```
-
-## Extension
-
-```bash
-pnpm dev:extension
-```
-
----
-
-# Current Backend Capabilities
-
-## Authentication
-- JWT access token generation
-- Secure bcrypt password hashing
-- Protected route authorization
-- User persistence
-
-## Scan Engine
-- URL submission endpoint
-- Risk scoring pipeline
-- Scan persistence
-- Structured scan response schema
+1. Open `chrome://extensions`
+2. Enable Developer Mode
+3. Click “Load unpacked”
+4. Select:
+   `apps/extension/dist`
 
 ---
 
@@ -184,37 +230,51 @@ pnpm dev:extension
 
 ```json
 {
-  "url": "https://free-iphone-giveaway.xyz",
-  "page_text": "WIN FREE IPHONE NOW LIMITED OFFER",
-  "page_title": "Free iPhone Giveaway",
-  "external_link_count": 15,
-  "form_count": 3
+  "url": "https://testsafebrowsing.appspot.com/s/phishing.html"
 }
 ```
 
 ---
 
+# Current Project Status
+
+Functional MVP completed:
+
+* End-to-end extension scanning
+* Real-time phishing detection
+* Google Safe Browsing integration
+* Explainable scoring pipeline
+* WHOIS intelligence integration
+* Redis-backed caching
+* Backend orchestration operational
+* Browser-extension integration working
+
+---
+
 # Future Improvements
 
-- ML-based phishing classification
-- Browser-side lightweight scanning
-- Threat intelligence integration
-- Community-driven reputation scoring
-- Admin moderation dashboard
-- WebSocket live threat updates
-- Distributed scan workers
+* SSL/TLS certificate intelligence
+* AI-generated threat explanations
+* Historical scan analytics
+* Threat intelligence provider expansion
+* Browser-side lightweight scanning
+* Real-time scan dashboards
+* Distributed intelligence workers
+* Advanced DOM-based phishing analysis
 
 ---
 
 # Why This Project?
 
-Modern phishing and scam websites increasingly use:
-- social engineering
-- deceptive UI patterns
-- fake urgency
-- cloned branding
+Modern phishing attacks increasingly rely on:
 
-Security Copilot aims to provide real-time browser-native protection and explainable risk analysis for everyday users.
+* social engineering
+* cloned branding
+* deceptive UI flows
+* disposable domains
+* credential harvesting techniques
+
+Security Copilot aims to provide real-time browser-native protection through explainable and adaptive threat intelligence rather than opaque black-box scoring.
 
 ---
 
