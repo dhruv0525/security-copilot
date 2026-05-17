@@ -43,6 +43,7 @@ export interface ScanResult {
     expired?: boolean;
     self_signed?: boolean;
   };
+  ai_explanation?: string;
 }
 
 export interface ScanListItem {

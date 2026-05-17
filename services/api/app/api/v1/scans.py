@@ -18,6 +18,7 @@ from app.services.intelligence.engine import (
     ScanContext,
     run_intelligence_scan,
 )
+from app.services.intelligence.ai_explainer import generate_ai_explanation
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -77,6 +78,21 @@ async def create_scan(
         else None
     )
 
+    # 4.5. Generate AI Explanation layer and persist it
+    ai_explanation = await generate_ai_explanation(
+        url=str(body.url),
+        trust_score=intelligence_result.trust_score,
+        risk_level=intelligence_result.risk_level,
+        confidence=intelligence_result.confidence,
+        signals=intelligence_result.signals,
+        reputation=payload["reputation"],
+        ssl_info=payload["ssl_info"],
+        domain_info=payload["domain_info"],
+        recommendation=intelligence_result.recommendation,
+        cache=cache,
+    )
+    payload["ai_explanation"] = ai_explanation
+
     repo = ScanRepository(db)
     new_scan = ScanResult(
         user_id=user.id,
@@ -121,6 +137,7 @@ async def create_scan(
             if intelligence_result.ssl_info
             else None
         ),
+        ai_explanation=ai_explanation,
     )
 
 
@@ -188,4 +205,5 @@ async def get_scan(
         domain_info=payload.get("domain_info"),
         reputation=payload.get("reputation"),
         ssl_info=payload.get("ssl_info"),
+        ai_explanation=payload.get("ai_explanation"),
     )

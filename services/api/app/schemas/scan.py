@@ -88,6 +88,9 @@ class ScanResponse(BaseModel):
     # SSL/TLS certificate intelligence
     ssl_info: dict | None = None
 
+    # AI-powered security explanation
+    ai_explanation: str | None = None
+
 
 
 class ScanListItem(BaseModel):

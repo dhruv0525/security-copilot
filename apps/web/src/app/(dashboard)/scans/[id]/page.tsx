@@ -85,7 +85,7 @@ export default function ScanDetailPage({ params }: PageProps) {
       scannedAt: data.scanned_at,
       threatCategory: ts.dominant_category ? ts.dominant_category.replace(/_/g, " ") : undefined,
       
-      aiSummary: ts.explanation || "No AI explanation available.",
+      aiSummary: data.ai_explanation || ts.explanation || "No AI explanation available.",
       aiReasoning: ts.recommendation || "No detailed reasoning logged.",
       recommendations: ts.issues?.map((issue: any) => issue.description) || [ts.recommendation || "Maintain standard browsing safeguards."],
       signals: mappedSignals,

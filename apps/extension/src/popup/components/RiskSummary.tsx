@@ -163,6 +163,24 @@ export function RiskSummary({ result }: Props) {
           </p>
         )}
       </div>
+      
+      {/* AI Explanation Banner */}
+      {result.ai_explanation && (
+        <div style={{
+          backgroundColor: "#f8fafc",
+          border: "1px solid #e2e8f0",
+          borderRadius: "8px",
+          padding: "10px",
+          marginBottom: "8px",
+        }}>
+          <p style={{ fontSize: "9px", fontWeight: 700, color: "#475569", marginBottom: "3px", textTransform: "uppercase", letterSpacing: "0.05em", display: "flex", alignItems: "center", gap: "4px" }}>
+            🤖 AI-Powered Summary
+          </p>
+          <p style={{ fontSize: "11px", color: "#334155", lineHeight: 1.4, margin: 0 }}>
+            {result.ai_explanation}
+          </p>
+        </div>
+      )}
 
       {/* Phishing Warning Banner */}
       {isPhishing && isCritical && <PhishingWarningBanner />}

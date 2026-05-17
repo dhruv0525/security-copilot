@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     rate_limit_window_seconds: int = 60
 
     # ── OpenAI ───────────────────────────────────────
-    openai_api_key: str
+    openai_api_key: str | None = None
     openai_model: str = "gpt-4o-mini"
 
     # ── CORS ─────────────────────────────────────────
