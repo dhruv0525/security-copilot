@@ -35,8 +35,9 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o-mini"
 
     # ── CORS ─────────────────────────────────────────
-    allowed_origins: list[str] = [
+    backend_cors_origins: str | list[str] = [
         "http://localhost:3000",
+        "http://127.0.0.1:3000",
     ]
 
     # ── External APIs ────────────────────────────────

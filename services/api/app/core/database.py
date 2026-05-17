@@ -16,8 +16,15 @@ class Base(DeclarativeBase):
 
 def _build_engine():
     settings = get_settings()
+    db_url = settings.database_url
+    # Support Railway/Render auto-injected postgresql URLs
+    if db_url.startswith("postgresql://"):
+        db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    elif db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql+asyncpg://", 1)
+
     return create_async_engine(
-        settings.database_url,
+        db_url,
         echo=not settings.is_production,
         pool_pre_ping=True,
         pool_size=10,

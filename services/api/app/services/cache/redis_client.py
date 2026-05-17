@@ -39,26 +39,54 @@ class CacheService:
         self._redis = redis
 
     async def get(self, key: str) -> str | None:
-        return await self._redis.get(key)
+        try:
+            return await self._redis.get(key)
+        except Exception as exc:
+            logger.warning("redis_cache_get_error", key=key, error=str(exc))
+            return None
 
     async def set(self, key: str, value: str, ttl_seconds: int) -> None:
-        await self._redis.setex(key, ttl_seconds, value)
+        try:
+            await self._redis.setex(key, ttl_seconds, value)
+        except Exception as exc:
+            logger.warning("redis_cache_set_error", key=key, error=str(exc))
 
     async def delete(self, key: str) -> None:
-        await self._redis.delete(key)
+        try:
+            await self._redis.delete(key)
+        except Exception as exc:
+            logger.warning("redis_cache_delete_error", key=key, error=str(exc))
 
     async def exists(self, key: str) -> bool:
-        return bool(await self._redis.exists(key))
+        try:
+            return bool(await self._redis.exists(key))
+        except Exception as exc:
+            logger.warning("redis_cache_exists_error", key=key, error=str(exc))
+            return False
 
     async def increment(self, key: str) -> int:
-        return await self._redis.incr(key)
+        try:
+            return await self._redis.increment(key)
+        except Exception as exc:
+            try:
+                return await self._redis.incr(key)
+            except Exception as e:
+                logger.warning("redis_cache_increment_error", key=key, error=str(e))
+                return 1
 
     async def expire(self, key: str, seconds: int) -> None:
-        await self._redis.expire(key, seconds)
+        try:
+            await self._redis.expire(key, seconds)
+        except Exception as exc:
+            logger.warning("redis_cache_expire_error", key=key, error=str(exc))
 
     async def get_json(self, key: str) -> Any | None:
         import json
-        value = await self._redis.get(key)
+        try:
+            value = await self._redis.get(key)
+        except Exception as exc:
+            logger.warning("redis_cache_get_json_error", key=key, error=str(exc))
+            return None
         if value is None:
             return None
         try:
@@ -69,4 +97,7 @@ class CacheService:
 
     async def set_json(self, key: str, value: Any, ttl_seconds: int) -> None:
         import json
-        await self._redis.setex(key, ttl_seconds, json.dumps(value))
+        try:
+            await self._redis.setex(key, ttl_seconds, json.dumps(value))
+        except Exception as exc:
+            logger.warning("redis_cache_set_json_error", key=key, error=str(exc))

@@ -17,10 +17,22 @@ from app.services.cache.redis_client import close_redis, get_redis
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     configure_logging()
     # Warm up Redis connection
-    await get_redis()
+    try:
+        redis_client = await get_redis()
+        # Attempt a quick check
+        await redis_client.ping()
+    except Exception as exc:
+        import logging
+        logging.getLogger("app.main").warning(
+            "[REDIS] Could not connect to Redis on startup: %s. Graceful degradation enabled.",
+            exc,
+        )
     yield
     # Graceful shutdown
-    await close_redis()
+    try:
+        await close_redis()
+    except Exception:
+        pass
 
 
 def create_app() -> FastAPI:
@@ -34,10 +46,29 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    # ── CORS Setup ──
+    raw_origins = settings.backend_cors_origins
+    if isinstance(raw_origins, str):
+        parsed_origins = [o.strip() for o in raw_origins.split(",") if o.strip()]
+    else:
+        parsed_origins = raw_origins
+
+    origins = []
+    allow_origin_regex = None
+
+    for origin in parsed_origins:
+        if origin == "chrome-extension://*":
+            allow_origin_regex = r"^chrome-extension://.*$"
+        elif origin.startswith("chrome-extension://"):
+            allow_origin_regex = r"^chrome-extension://.*$"
+        else:
+            origins.append(origin)
+
     # ── Middleware (order matters: outermost runs first on request) ──
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=origins,
+        allow_origin_regex=allow_origin_regex,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
